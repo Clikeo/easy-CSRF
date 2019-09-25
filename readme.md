@@ -3,8 +3,15 @@ Easy CSRF - Cross Site Request Forgery Protection
 
 This library is a simple signature generator to protect form submissions from cross site request forgery, using a signed token. It does not require server-side storage of valid tokens and is thereby stateless.
 
+Install
+------------
+
+composer require itrack/csrf
+
+
 Simple usage
 ------------
+
 
 ```php
 $secret = '948thksehbf23fnoug2p4g2o...'; // well chosen secret
@@ -20,8 +27,7 @@ if ($_POST) {
 
 ```html
 <form action="" method="post">
-    <?php printf('<input type="hidden" name="_token" value="%s">',
-                 htmlspecialchars($signer->getSignature())); ?>
+    <?php printf('<input type="hidden" name="_token" value="%s">', $signer->getSignature()); ?>
     ...
     <input type="submit" value="Submit">
 </form>
@@ -71,8 +77,7 @@ $signer->addValue('lastname');
 
 ```html
 <form action="" method="post">
-    <?php printf('<input type="hidden" name="_token" value="%s">',
-                 htmlspecialchars($signer->getSignature())); ?>
+    <?php printf('<input type="hidden" name="_token" value="%s">', $signer->getSignature()); ?>
     <input type="text" name="firstname">
     <input type="text" name="lastname">
     <input type="submit" value="Submit">
@@ -106,14 +111,7 @@ The drawback of adding form fields is that the same form fields need to be added
 Signature format
 ----------------
 
-The generated signature has the following format:
-
-    1352582467:PdyfgHNZt...1Uqg==:94KNdWzg4...7iwHw==
-    timestamp |   random token   |   signed token
-
-The random token and signed token are base64 encoded data. The total signature is about 188 bytes in length by default.
-
-The signature format by default is, simplified:
+The signature is encoded in base64, format by default is:
 
     timestamp + ":" + token + ":" + signed token
 
@@ -122,6 +120,7 @@ where
     timestamp    = unsigned integer
     token        = base64 encoded random value
     signed token = base64 encoded hash
+    
     hash         = HMAC_SHA512(timestamp + token + data, secret)
     data         = all added values
 

@@ -52,11 +52,12 @@ class SignatureGenerator {
         $timestamp = time();
         $token     = $this->generateToken();
         $signature = $this->generateSignature($timestamp, $token);
-        return "$timestamp:$token:$signature";
+        return base64_encode("$timestamp:$token:$signature");
     }
 
     public function validateSignature($signatureToken) {
-        $args = explode(':', $signatureToken);
+        $decode = base64_decode($signatureToken);
+        $args = explode(':', $decode);
         if (count($args) != 3) {
             return false;
         }
