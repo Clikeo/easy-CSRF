@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunststube\CSRFP;
+namespace Itrack\CSRF;
 
 
 interface ICryptoProvider {

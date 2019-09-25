@@ -1,38 +1,24 @@
-Kunststube\CSRFP - Cross Site Request Forgery Protection
+Easy CSRF - Cross Site Request Forgery Protection
 ========================================================
 
 This library is a simple signature generator to protect form submissions from cross site request forgery, using a signed token. It does not require server-side storage of valid tokens and is thereby stateless.
-
-Context
--------
-
-Cross site request forgery can be subverted by including a token in each form which is hard to replicate by an attacker. Upon receiving a form submission, the token is checked for validity and the submitted data is deemed valid or invalid based on the validity of the token.
-
-One implementation of this idea is to generate a random value, store it server-side in the user's session and in a hidden field in the form, then upon form submission check if the submitted value is identical to the value stored in the session. This approach has the drawback of requiring server-side state and storage space. The implementation also becomes slightly more complex when wanting to allow the user to open several forms/tabs at once, possibly allowing several valid tokens to be in play at the same time.
-
-The Kunststube\CSRFP library uses a signature approach. A randomly generated token is signed using a secret, which is statically stored on the server. The random token and its signed version are together embedded into the form as a signature. Upon receiving the form submission, the signature is generated again from the submitted token and the known secret and compared to the submitted signature. The signature should only be valid if the entity that generated it knows the secret, proving that the signed token originally came from the server itself.
 
 Simple usage
 ------------
 
 ```php
-<?php
-    
-    require_once 'CSRFP/SignatureGenerator.php';
+$secret = '948thksehbf23fnoug2p4g2o...'; // well chosen secret
+$signer = new \Itrack\CSRF\SignatureGenerator($secret);
 
-    $secret = '948thksehbf23fnoug2p4g2o...'; // well chosen secret
-
-    $signer = new Kunststube\CSRFP\SignatureGenerator($secret);
-
-    if ($_POST) {
-        if (!$signer->validateSignature($_POST['_token'])) {
-            header('HTTP/1.0 400 Bad Request');
-            exit;
-        }
+if ($_POST) {
+    if (!$signer->validateSignature($_POST['_token'])) {
+        header('HTTP/1.0 400 Bad Request');
+        exit;
     }
+}
+```
 
-?>
-
+```html
 <form action="" method="post">
     <?php printf('<input type="hidden" name="_token" value="%s">',
                  htmlspecialchars($signer->getSignature())); ?>
@@ -71,19 +57,19 @@ The signature will only be valid if the same data was added when the token was g
 For example, when generating the token:
 
 ```php
-<?php
-    $signer = new Kunststube\CSRFP\SignatureGenerator($secret);
-    
-    // including user id in signature
-    // 'userid' is an arbitrarily chosen key name
-    $signer->addKeyValue('userid', $_SESSION['User']['id']);
-    
-    // including names of valid form fields in signature
-    $signer->addValue('_token');
-    $signer->addValue('firstname');
-    $signer->addValue('lastname');
-?>
+$signer = new \Itrack\CSRF\SignatureGenerator($secret);
 
+// including user id in signature
+// 'userid' is an arbitrarily chosen key name
+$signer->addKeyValue('userid', $_SESSION['User']['id']);
+
+// including names of valid form fields in signature
+$signer->addValue('_token');
+$signer->addValue('firstname');
+$signer->addValue('lastname');
+```
+
+```html
 <form action="" method="post">
     <?php printf('<input type="hidden" name="_token" value="%s">',
                  htmlspecialchars($signer->getSignature())); ?>
@@ -96,7 +82,7 @@ For example, when generating the token:
 When validating the token, use the submitted form fields as part of the validation:
 
 ```php
-$signer = new Kunststube\CSRFP\SignatureGenerator($secret);
+$signer = new \Itrack\CSRF\SignatureGenerator($secret);
 
 // including user id in signature validation
 $signer->addKeyValue('userid', $_SESSION['User']['id']);
@@ -146,21 +132,8 @@ Crypto provider
 
 An alternative `CryptoProvider`, which provides a source of randomness and the hashing algorithm, can be passed upon instantiating `SignatureGenerator` as the second argument to the constructor. Consult `ICryptoProvider.php` and `CryptoProvider.php`.
 
-PSR-0
------
-
-The repository is organized so its contents can be dumped into a folder `Kunststube/CSRFP/` and the naming be PSR-0 compliant.
-
-Warning
--------
-
-Use security related software only if you have vetted it and trust its premise and implementation, or if you trust the community to have vetted it and deemed it secure. While the author is fairly confident that the software works as described above, it has not been critically vetted by peers just yet. The author does not make any promises or guarantees as to the function of the software.
-
 Information
 -----------
 
-Version: 0.1 (initial release)  
-Author:  David Zentgraf  
-Contact: csrfp@kunststube.net  
-License: Public Domain
+Based on https://github.com/deceze/Kunststube-CSRFP package
 

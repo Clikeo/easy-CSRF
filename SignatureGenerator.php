@@ -1,18 +1,17 @@
 <?php
 
-namespace Kunststube\CSRFP;
+namespace Itrack\CSRF;
 
 
 class SignatureGenerator {
 
-    protected $validityWindow = '-24 hours',
+    protected $validityWindow = '-1 hour',
               $data           = array(),
               $crypto,
               $secret;
 
     public function __construct($secret, ICryptoProvider $crypto = null) {
         if (!$crypto) {
-            require_once __DIR__ . DIRECTORY_SEPARATOR . 'CryptoProvider.php';
             $crypto = new CryptoProvider;
         }
 
@@ -59,7 +58,7 @@ class SignatureGenerator {
     public function validateSignature($signatureToken) {
         $args = explode(':', $signatureToken);
         if (count($args) != 3) {
-            throw new \InvalidArgumentException("'$signatureToken' is not a valid signature format");
+            return false;
         }
         
         list($timestamp, $token, $signature) = $args;

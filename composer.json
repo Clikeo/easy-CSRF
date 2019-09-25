@@ -1,8 +1,8 @@
 {
-    "name": "itrack/csrfp",
-    "description": "A signed token generator for cross site request forgery protection.",
-    "keywords": ["csrf", "token"],
-    "homepage": "https://github.com/itrack/Kunststube-CSRFP",
+    "name": "itrack/csrf",
+    "description": "Easy to use cross site request forgery protection.",
+    "keywords": ["csrf", "token", "security", "protection"],
+    "homepage": "https://github.com/itrack/easy-CSRF",
     "authors": [
         {
             "name": "David Zentgraf",
@@ -15,10 +15,10 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Itrack\\CSRFP": "" }
+        "psr-0": { "Itrack\\CSRF": "" }
     },
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=7.0.0"
     },
-    "target-dir": "Itrack/CSRFP"
+    "target-dir": "Itrack/CSRF"
 }
