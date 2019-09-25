@@ -1,20 +1,24 @@
 {
-    "name": "kunststube/csrfp",
+    "name": "itrack/csrfp",
     "description": "A signed token generator for cross site request forgery protection.",
     "keywords": ["csrf", "token"],
-    "homepage": "https://github.com/deceze/Kunststube-CSRFP",
+    "homepage": "https://github.com/itrack/Kunststube-CSRFP",
     "authors": [
         {
             "name": "David Zentgraf",
             "email": "csrfp@kunststube.net",
             "homepage": "http://kunststube.net"
+        },
+        {
+            "name": "Alex Stoica",
+            "email": "0x01.alex+github@gmail.com"
         }
     ],
     "autoload": {
-        "psr-0": { "Kunststube\\CSRFP": "" }
+        "psr-0": { "Itrack\\CSRFP": "" }
     },
     "require": {
         "php": ">=5.3.0"
     },
-    "target-dir": "Kunststube/CSRFP"
+    "target-dir": "Itrack/CSRFP"
 }
