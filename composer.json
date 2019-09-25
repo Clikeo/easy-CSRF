@@ -15,7 +15,9 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Itrack\\CSRF": "" }
+        "psr-4": {
+            "Itrack\\CSRF\\": "src/"
+        }
     },
     "require": {
         "php": ">=7.0.0"

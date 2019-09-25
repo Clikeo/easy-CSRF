@@ -2,12 +2,10 @@
 
 date_default_timezone_set('UTC');
 
-use Kunststube\CSRFP\SignatureGenerator;
+use PHPUnit\Framework\TestCase;
+use Itrack\CSRF\SignatureGenerator;
 
-require_once 'SignatureGenerator.php';
-
-
-class SignatureGeneratorTest extends PHPUnit_Framework_TestCase {
+class SignatureGeneratorTest extends TestCase {
 
 	protected function secret() {
 		return sha1(mt_rand());
@@ -21,7 +19,7 @@ class SignatureGeneratorTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertStringMatchesFormat('%s', $signature);
 		$this->assertGreaterThan(10, strlen($signature));
-		$this->assertNotContains($secret, $signature);
+		$this->assertStringNotContainsString($secret, $signature);
 	}
 
 	public function testIncludedValues() {
@@ -110,13 +108,10 @@ class SignatureGeneratorTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($sg2->validateSignature($fakeSignature));
 	}
 
-	/**
-     * @expectedException InvalidArgumentException
-     */
 	public function testSignatureFormatFail() {
 		$sg = new SignatureGenerator($this->secret());
 		$fakeSignature = sha1(mt_rand());
-		$sg->validateSignature($fakeSignature);
+        $this->assertFalse($sg->validateSignature($fakeSignature));
 	}
 
 	public function testTokenTimeoutFail() {
@@ -136,7 +131,7 @@ class SignatureGeneratorTest extends PHPUnit_Framework_TestCase {
 	public function testTimestampFutzingFail() {
 		$sg = new SignatureGenerator($this->secret());
 		$signature = $sg->getSignature();
-		$this->assertStringMatchesFormat('%d%s', $signature);
+		$this->assertStringMatchesFormat('%s', $signature);
 		
 		$fakeSignature = preg_replace('/^\d+/', time() + 1000, $signature);
 		$sg->setValidityWindow(time() + 100);
